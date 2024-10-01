@@ -14,14 +14,7 @@ class ProductApp extends StatefulWidget {
 }
 
 class _ProductAppState extends State<ProductApp> {
-  List<String> category = [
-    'All',
-    'jewelary',
-    'laptops',
-    'Smart Phones',
-    "Men's Clothing",
-    "Women's Clothing"
-  ];
+  List<String> category = ['All'];
   String selectCat = "All";
   List<Model> models = [];
   bool isLoading = true;
@@ -37,8 +30,14 @@ class _ProductAppState extends State<ProductApp> {
     final response = await http.get(Uri.parse("https://fakestoreapi.com/products"));
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
+      List<Model> fetchedModels = data.map((json) => Model.fromJson(json)).toList();
+
+      // Extract unique categories from fetched products
+      Set<String> fetchedCategories = fetchedModels.map((product) => product.category).toSet();
+
       setState(() {
-        models = data.map((json) => Model.fromJson(json)).toList();
+        models = fetchedModels;
+        category = ['All','electronics',"jewelery","women's clothing","men's clothing"];
         isLoading = false;
       });
     } else {
@@ -77,7 +76,7 @@ class _ProductAppState extends State<ProductApp> {
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text("Total: ₨ ${totalPrice.toStringAsFixed(2)}",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+            child: Text("Total: ₨ ${totalPrice.toStringAsFixed(2)}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           )
         ],
       ),
@@ -93,7 +92,7 @@ class _ProductAppState extends State<ProductApp> {
               itemCount: category.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(category[index]),
+                  title: Text(category[index],style: TextStyle(fontSize: 12),),
                   selected: category[index] == selectCat,
                   onTap: () {
                     setState(() {
@@ -122,98 +121,95 @@ class _ProductAppState extends State<ProductApp> {
                           return SizedBox.shrink();
                         }
                         return Card(
-                          elevation: 4,
+                            elevation: 4,
                             shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: Get.height/5,
-                              width: double.infinity,
-                              child: CachedNetworkImage(
-                                imageUrl: models[index].image,
-                                fit: BoxFit.fill,
-                                placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-                                errorWidget: (context, url, error) => Icon(Icons.error),
-                              ),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                models[index].title,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: Get.height / 5,
+                                  width: double.infinity,
+                                  child: CachedNetworkImage(
+                                    imageUrl: models[index].image,
+                                    fit: BoxFit.fill,
+                                    placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                                    errorWidget: (context, url, error) => Icon(Icons.error),
+                                  ),
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            Text(
-                              '₹${models[index].price}',
-                              style: TextStyle(color: Colors.green, fontSize: 16),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: Icon(
-                                      Icons.star,
-                                      color: Colors.yellow,
-                                      size: 15,
-                                    ),
-                                  ),
-                                  Text(
-                                    "${models[index].rating.rate}",
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    "(${models[index].rating.count} Ratings)",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: Get.height/80,),
-                            Container(
-                              width: Get.width,
-                              height: 40,
-                              margin: EdgeInsets.symmetric(horizontal: 8),
-                              decoration: BoxDecoration(
-                                color: models[index].addedToCart ? Colors.red : Colors.blue,
-
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  if (models[index].addedToCart) {
-                                    removeFromCart(models[index].id);
-                                  } else {
-                                    addToCart(models[index].id);
-                                  }
-                                },
-                                child: Center(
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8),
                                   child: Text(
-                                    models[index].addedToCart ? 'Remove' : 'Add to Cart',
+                                    models[index].title,
                                     style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 13,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                              ),
-                            )
-                          ],
-                        )
-                        );
+                                Text(
+                                  '₹${models[index].price}',
+                                  style: TextStyle(color: Colors.green, fontSize: 16),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: Icon(
+                                          Icons.star,
+                                          color: Colors.yellow,
+                                          size: 15,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${models[index].rating.rate}",
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        "(${models[index].rating.count} Ratings)",
+                                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: Get.height / 80,
+                                ),
+                                Container(
+                                  width: Get.width,
+                                  height: 40,
+                                  margin: EdgeInsets.symmetric(horizontal: 8),
+                                  decoration: BoxDecoration(
+                                    color: models[index].addedToCart ? Colors.red : Colors.blue,
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      if (models[index].addedToCart) {
+                                        removeFromCart(models[index].id);
+                                      } else {
+                                        addToCart(models[index].id);
+                                      }
+                                    },
+                                    child: Center(
+                                      child: Text(
+                                        models[index].addedToCart ? 'Remove' : 'Add to Cart',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ));
                       },
                     ),
                   ),
