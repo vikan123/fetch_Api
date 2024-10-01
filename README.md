@@ -4,9 +4,14 @@ A new Flutter project.
 
 ## Getting Started
 
-https://github.com/user-attachments/assets/90eefc47-46ce-4bd6-9bd5-c26e2abaf7e1
-https://github.com/user-attachments/assets/1033f95a-c1cf-4fa0-8bc9-45a5606fbb32
-https://github.com/user-attachments/assets/cf2f999d-2cfb-4778-b6d6-96ee792ecb83
+<img src="https://github.com/user-attachments/assets/90eefc47-46ce-4bd6-9bd5-c26e2abaf7e1" width = "400" height = "800">
+<img src="https://github.com/user-attachments/assets/1033f95a-c1cf-4fa0-8bc9-45a5606fbb32" width = "400" height = "800">
+<img src="https://github.com/user-attachments/assets/cf2f999d-2cfb-4778-b6d6-96ee792ecb83" width = "400" height = "800">
+
+
+
+
+
 
 This project is a starting point for a Flutter application.
 
